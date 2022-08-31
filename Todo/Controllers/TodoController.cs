@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Todo.Data;
+using Todo.Interfaces;
 using Todo.Models;
 
 namespace Todo.Controllers
@@ -9,111 +8,41 @@ namespace Todo.Controllers
     [ApiController]
     public class TodoController : ControllerBase
     {
-        private readonly TodoContext _context;
+        private readonly ITodo _todo;
 
-        public TodoController(TodoContext context)
+        public TodoController(ITodo todo)
         {
-            _context = context;
+            _todo = todo;
         }
 
-        // GET: api/TodoItems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItem()
+        public Task<IEnumerable<TodoItem>> GetTodoItems()
         {
-          if (_context.TodoItem == null)
-          {
-              return NotFound();
-          }
-            return await _context.TodoItem.ToListAsync();
+            return _todo.GetTodoItems();
         }
 
-        // GET: api/TodoItems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
+        public Task<TodoItem> GetTodoItem(int id)
         {
-          if (_context.TodoItem == null)
-          {
-              return NotFound();
-          }
-            var todoItem = await _context.TodoItem.FindAsync(id);
-
-            if (todoItem == null)
-            {
-                return NotFound();
-            }
-
-            return todoItem;
+            return _todo.GetTodoItem(id);
         }
 
-        // PUT: api/TodoItems/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoItem(int id, TodoItem todoItem)
-        {
-            if (id != todoItem.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(todoItem).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoItemExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/TodoItems
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
+        public async Task<TodoItem> PostTodoItem(TodoItem todoItem)
         {
-          if (_context.TodoItem == null)
-          {
-              return Problem("Entity set 'TodoContext.TodoItem'  is null.");
-          }
-            _context.TodoItem.Add(todoItem);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTodoItem", new { id = todoItem.Id }, todoItem);
+            return await _todo.PostTodoItem(todoItem);
         }
 
-        // DELETE: api/TodoItems/5
+        [HttpPut("{id}")]
+        public async Task<string> PutTodoItem(int id, TodoItem todoItem)
+        {
+            return await _todo.PutTodoItem(id, todoItem);
+        }
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTodoItem(int id)
+        public async Task<string> DeleteTodoItem(int id)
         {
-            if (_context.TodoItem == null)
-            {
-                return NotFound();
-            }
-            var todoItem = await _context.TodoItem.FindAsync(id);
-            if (todoItem == null)
-            {
-                return NotFound();
-            }
-
-            _context.TodoItem.Remove(todoItem);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool TodoItemExists(int id)
-        {
-            return (_context.TodoItem?.Any(e => e.Id == id)).GetValueOrDefault();
+            return await _todo.DeleteTodoItem(id);
         }
     }
 }
