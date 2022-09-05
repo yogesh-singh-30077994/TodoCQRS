@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Todo.Data.Interface;
 using Todo.Models;
 
@@ -13,34 +14,34 @@ namespace Todo.Data.Service
             _context = context;
         }
 
-        public async Task<IEnumerable<TodoItem>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             if (_context.TodoItem == null)
             {
-                throw new Exception("Entity set 'TodoContext.TodoItem'  is null.");
+                return new NotFoundResult();
             }
             return await _context.TodoItem.ToListAsync();
         }
 
-        public async Task<TodoItem> GetTodoItem(int id)
+        public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
             if (_context.TodoItem == null)
             {
-                throw new Exception("Entity set 'TodoContext.TodoItem'  is null.");
+                return new NotFoundResult();
             }
             var todoItem = await _context.TodoItem.FindAsync(id);
             if (todoItem == null)
             {
-                throw new Exception("No TodoItem for given ID");
+                return new NotFoundResult();
             }
             return todoItem;
         }
 
-        public async Task<TodoItem> CreateTodoItem(TodoItem todoItem)
+        public async Task<ActionResult<TodoItem>> CreateTodoItem(TodoItem todoItem)
         {
             if (_context.TodoItem == null)
             {
-                throw new Exception("Entity set 'TodoContext.TodoItem'  is null.");
+                return new NotFoundResult();
             }
             _context.TodoItem.Add(todoItem);
             await _context.SaveChangesAsync();
@@ -48,11 +49,11 @@ namespace Todo.Data.Service
             return todoItem;
         }
 
-        public async Task<string> UpdateTodoItem(int id, TodoItem todoItem)
+        public async Task<ActionResult<string>> UpdateTodoItem(int id, TodoItem todoItem)
         {
             if (id != todoItem.Id)
             {
-                throw new Exception("Bad Request");
+                return new BadRequestResult();
             }
 
             _context.Entry(todoItem).State = EntityState.Modified;
@@ -65,7 +66,7 @@ namespace Todo.Data.Service
             {
                 if (!TodoItemExists(id))
                 {
-                    throw new Exception("TodoItem Does Not exists!");
+                    return new NotFoundResult();
                 }
                 else
                 {
@@ -76,16 +77,16 @@ namespace Todo.Data.Service
             return string.Empty;
         }
 
-        public async Task<string> DeleteTodoItem(int id)
+        public async Task<ActionResult<string>> DeleteTodoItem(int id)
         {
             if (_context.TodoItem == null)
             {
-                throw new Exception("Entity set 'TodoContext.TodoItem'  is null.");
+                return new NotFoundResult();
             }
             var todoItem = await _context.TodoItem.FindAsync(id);
             if (todoItem == null)
             {
-                throw new Exception("TodoItem does not exists.");
+                return new NotFoundResult();
             }
 
             _context.TodoItem.Remove(todoItem);

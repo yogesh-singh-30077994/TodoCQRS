@@ -16,31 +16,31 @@ namespace Todo.Controllers
         }
 
         [HttpGet]
-        public Task<IEnumerable<TodoItem>> GetTodoItems()
+        public Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             return _todo.GetTodoItems();
         }
 
         [HttpGet("{id}")]
-        public Task<TodoItem> GetTodoItem(int id)
+        public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
-            return _todo.GetTodoItem(id);
+            return await _todo.GetTodoItem(id);
         }
 
         [HttpPost]
-        public async Task<TodoItem> PostTodoItem(TodoItem todoItem)
+        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             return await _todo.PostTodoItem(todoItem);
         }
 
         [HttpPut("{id}")]
-        public async Task<string> PutTodoItem(int id, TodoItem todoItem)
+        public async Task<ActionResult<string>> PutTodoItem(int id, TodoItem todoItem)
         {
             return await _todo.PutTodoItem(id, todoItem);
         }
 
         [HttpDelete("{id}")]
-        public async Task<string> DeleteTodoItem(int id)
+        public async Task<ActionResult<string>> DeleteTodoItem(int id)
         {
             return await _todo.DeleteTodoItem(id);
         }

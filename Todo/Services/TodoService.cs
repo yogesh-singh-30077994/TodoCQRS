@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Todo.Domain.Command.Create;
 using Todo.Domain.Command.Delete;
 using Todo.Domain.Command.Update;
@@ -17,27 +18,27 @@ namespace Todo.Services
             _mediatr = mediator;
         }
 
-        public async Task<IEnumerable<TodoItem>> GetTodoItems()
+        public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems()
         {
             return await _mediatr.Send(new GetTodoItemsQuery());
         }
 
-        public async Task<TodoItem> GetTodoItem(int id)
+        public async Task<ActionResult<TodoItem>> GetTodoItem(int id)
         {
             return await _mediatr.Send(new GetTodoItemQuery(id));
         }
 
-        public async Task<TodoItem> PostTodoItem(TodoItem todoItem)
+        public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             return await _mediatr.Send(new TodoItemCreate(todoItem));
         }
 
-        public async Task<string> PutTodoItem(int id, TodoItem todoItem)
+        public async Task<ActionResult<string>> PutTodoItem(int id, TodoItem todoItem)
         {
             return await _mediatr.Send(new TodoItemUpdate(id, todoItem));
         }
 
-        public async Task<string> DeleteTodoItem(int id)
+        public async Task<ActionResult<string>> DeleteTodoItem(int id)
         {
             return await _mediatr.Send(new TodoItemDelete(id));
         }

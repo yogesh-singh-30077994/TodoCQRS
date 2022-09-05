@@ -1,11 +1,12 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Todo.Data.Interface;
 using Todo.Domain.Query;
 using Todo.Models;
 
 namespace Todo.Domain.QueryHandler
 {
-    public class GetTodoItemsQueryHandler : IRequestHandler<GetTodoItemsQuery, IEnumerable<TodoItem>>
+    public class GetTodoItemsQueryHandler : IRequestHandler<GetTodoItemsQuery, ActionResult<IEnumerable<TodoItem>>>
     {
         private readonly ITodoDB _todoDB;
 
@@ -14,7 +15,7 @@ namespace Todo.Domain.QueryHandler
             _todoDB = todoDB;
         }
 
-        public async Task<IEnumerable<TodoItem>> Handle(GetTodoItemsQuery request, CancellationToken cancellationToken)
+        public async Task<ActionResult<IEnumerable<TodoItem>>> Handle(GetTodoItemsQuery request, CancellationToken cancellationToken)
         {
             return await _todoDB.GetTodoItems();
         }

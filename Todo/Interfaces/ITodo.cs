@@ -5,14 +5,14 @@ namespace Todo.Interfaces
 {
     public interface ITodo
     {
-        Task<IEnumerable<TodoItem>> GetTodoItems();
+        Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItems();
 
-        Task<TodoItem> GetTodoItem(int id);
+        Task<ActionResult<TodoItem>> GetTodoItem(int id);
 
-        Task<TodoItem> PostTodoItem(TodoItem todoItem);
+        Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem);
 
-        Task<string> PutTodoItem(int id, TodoItem todoItem);
+        Task<ActionResult<string>> PutTodoItem(int id, TodoItem todoItem);
 
-        Task<string> DeleteTodoItem(int id);
+        Task<ActionResult<string>> DeleteTodoItem(int id);
     }
 }

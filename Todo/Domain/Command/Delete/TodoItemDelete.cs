@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Todo.Domain.Command.Delete
 {
-    public class TodoItemDelete: IRequest<string>
+    public class TodoItemDelete: IRequest<ActionResult<string>>
     {
         public readonly int id;
 
